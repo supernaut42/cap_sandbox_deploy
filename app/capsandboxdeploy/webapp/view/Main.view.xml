@@ -1,0 +1,16 @@
+<mvc:View controllerName="cap.sandbox.dummy.capsandboxdeploy.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}">
+        <content>	<List
+		headerText="{i18n>listTitle}"
+		headerLevel="H2"
+		items="{
+			path: '/DummyEntity'
+		}" >
+		<StandardListItem
+			title="{someText}"
+			counter="{someNumber}"/>
+	</List></content>
+    </Page>
+</mvc:View>

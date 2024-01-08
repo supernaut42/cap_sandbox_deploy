@@ -1,0 +1,1 @@
+using Dummy as service from '../../srv/dummy-service';
