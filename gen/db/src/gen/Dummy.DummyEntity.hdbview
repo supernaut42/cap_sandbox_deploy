@@ -1,0 +1,9 @@
+VIEW Dummy_DummyEntity AS SELECT
+  DummyEntity_0.createdAt,
+  DummyEntity_0.createdBy,
+  DummyEntity_0.modifiedAt,
+  DummyEntity_0.modifiedBy,
+  DummyEntity_0.ID,
+  DummyEntity_0.someText,
+  DummyEntity_0.someNumber
+FROM cap_sandbox_deploy_DummyEntity AS DummyEntity_0

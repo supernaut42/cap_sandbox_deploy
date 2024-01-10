@@ -1,0 +1,136 @@
+_schema-version: "3.1"
+ID: cap_sandbox_deploy
+description: A simple CAP project.
+version: 1.0.0
+modules:
+  - name: cap_sandbox_deploy-srv
+    type: nodejs
+    path: gen/srv
+    requires:
+      - name: cap_sandbox_deploy-uaa
+      - name: cap_sandbox_deploy-db
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm
+  - name: cap_sandbox_deploy-destinations
+    type: com.sap.application.content
+    requires:
+      - name: cap_sandbox_deploy-uaa
+        parameters:
+          service-key:
+            name: cap_sandbox_deploy-uaa-key
+      - name: cap_sandbox_deploy-html5-repo-host
+        parameters:
+          service-key:
+            name: cap_sandbox_deploy-html5-repo-host-key
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+      - name: cap_sandbox_deploy-destination
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Authentication: OAuth2UserTokenExchange
+              Name: cap_sandbox_deploy-app-srv
+              TokenServiceInstanceName: cap_sandbox_deploy-uaa
+              TokenServiceKeyName: cap_sandbox_deploy-uaa-key
+              URL: ~{srv-api/srv-url}
+              sap.cloud.service: cap_sandbox_deploy.service
+            - Name: cap_sandbox_deploy-html5-repo-host
+              ServiceInstanceName: cap_sandbox_deploy-html5-repo-host
+              ServiceKeyName: cap_sandbox_deploy-html5-repo-host-key
+              sap.cloud.service: cap_sandbox_deploy.service
+            - Authentication: OAuth2UserTokenExchange
+              Name: cap_sandbox_deploy-uaa
+              ServiceInstanceName: cap_sandbox_deploy-uaa
+              ServiceKeyName: cap_sandbox_deploy-uaa-key
+              sap.cloud.service: cap_sandbox_deploy.service
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+  - name: cap_sandbox_deploy-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: cap_sandbox_deploy-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - capsandboxdummycapsandboxdeploy.zip
+          name: capsandboxdummycapsandboxdeploy
+          target-path: resources/
+  - name: capsandboxdummycapsandboxdeploy
+    type: html5
+    path: app/capsandboxdeploy
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms:
+        []
+
+  - name: cap_sandbox_deploy-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: cap_sandbox_deploy-db
+resources:
+  - name: cap_sandbox_deploy-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        tenant-mode: dedicated
+        xsappname: cap_sandbox_deploy-${space}
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
+  - name: cap_sandbox_deploy-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+            existing_destinations_policy: update
+      service: destination
+      service-plan: lite
+  - name: cap_sandbox_deploy-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: cap_sandbox_deploy-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npx cds build --production
+        - npx rimraf gen/db/src/gen/data

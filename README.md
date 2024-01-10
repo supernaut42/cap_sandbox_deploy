@@ -1,25 +1,14 @@
-# Getting Started
+# ToDo
 
-Welcome to your new project.
-
-It contains these folders and files, following our recommended project layout:
-
-File or Folder | Purpose
----------|----------
-`app/` | content for UI frontends goes here
-`db/` | your domain models and data go here
-`srv/` | your service models and code go here
-`package.json` | project metadata and configuration
-`readme.md` | this getting started guide
+- https://developers.sap.com/tutorials/btp-app-cap-mta-deployment.html
+- Mit lokalem VSCode ausprobieren
+- Branch anlegen
 
 
-## Next Steps
-
-- Open a new terminal and run `cds watch` 
-- (in VS Code simply choose _**Terminal** > Run Task > cds watch_)
-- Start adding content, for example, a [db/schema.cds](db/schema.cds).
+# Deploy
 
 
-## Learn More
-
-Learn more at https://cap.cloud.sap/docs/get-started/.
+mbt build -t ./
+cf api https://api.cf.eu10-004.hana.ondemand.com/
+cf login
+cf deploy cap_sandbox_deploy_1.0.0.mtar

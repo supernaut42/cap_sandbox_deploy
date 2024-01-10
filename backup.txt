@@ -1,0 +1,21 @@
+  
+  - name: cap_sandbox_deploy-db
+
+  - name: cap_sandbox_deploy-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: cap_sandbox_deploy-db
+  
+  - name: cap_sandbox_deploy-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+
+      xsappname: cap_sandbox_deploy-${org}-${space}
+
+      https://answers.sap.com/questions/13940492/invalid-characters-in-cloud-foundry-org-name-unabl.html

@@ -1,0 +1,10 @@
+COLUMN TABLE cap_sandbox_deploy_DummyEntity (
+  createdAt TIMESTAMP,
+  createdBy NVARCHAR(255),
+  modifiedAt TIMESTAMP,
+  modifiedBy NVARCHAR(255),
+  ID NVARCHAR(36) NOT NULL,
+  someText NVARCHAR(5000),
+  someNumber INTEGER,
+  PRIMARY KEY(ID)
+)

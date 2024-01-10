@@ -1,0 +1,31 @@
+{
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.DummyViewer",
+      "description": "Sees things"
+    },
+    {
+      "name": "$XSAPPNAME.DummyAdmin",
+      "description": "Does things"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "DummyViewer",
+      "description": "Sees things",
+      "scope-references": [
+        "$XSAPPNAME.DummyViewer"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "DummyAdmin",
+      "description": "Does things",
+      "scope-references": [
+        "$XSAPPNAME.DummyAdmin"
+      ],
+      "attribute-references": []
+    }
+  ],
+  "attributes": []
+}
